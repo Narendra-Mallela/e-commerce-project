@@ -1,0 +1,59 @@
+import React from "react";
+import { ShoppingCart, Star, Zap } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
+
+export default function ProductCard({ product }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+
+  function handleAddToCart(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    addToCart(product);
+  }
+
+  function handleBuyNow(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    navigate("/checkout", {
+      state: { items: [{ ...product, quantity: 1 }] },
+    });
+  }
+
+  return (
+    <Link
+      className="product-card"
+      to={`/product/${product.id}${location.search}`}
+      state={{ from: `${location.pathname}${location.search}` }}
+    >
+      <div className="product-image-wrap">
+        <img src={product.thumbnail} alt={product.title} loading="lazy" />
+      </div>
+      <div className="product-info">
+        {product.category && (
+          <span className="product-category-badge">{product.category}</span>
+        )}
+        <h2>{product.title}</h2>
+        <div className="product-meta">
+          <strong>${product.price}</strong>
+          <span className="rating-pill">
+            <Star size={12} fill="currentColor" />
+            {Number(product.rating).toFixed(1)}
+          </span>
+        </div>
+        <div className="card-action-row">
+          <button className="add-to-cart-btn" onClick={handleAddToCart} aria-label="Add to cart">
+            <ShoppingCart size={14} />
+            Add to Cart
+          </button>
+          <button className="buy-now-btn" onClick={handleBuyNow} aria-label="Buy now">
+            <Zap size={14} />
+            Buy Now
+          </button>
+        </div>
+      </div>
+    </Link>
+  );
+}
