@@ -1164,6 +1164,20 @@ a { color: inherit; text-decoration: none; }
   /* Show bottom nav, hide desktop cart icon */
   .bottom-nav { display: grid; }
 
+  .topbar {
+    grid-template-columns: 38px auto minmax(0, 1fr) 38px;
+    gap: 10px;
+    padding-inline: 14px;
+  }
+
+  .topbar-actions {
+    gap: 0;
+  }
+
+  .cart-icon-button {
+    display: none;
+  }
+
   .main-content {
     padding-bottom: 72px;
   }
@@ -1259,7 +1273,7 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 520px) {
   .topbar {
-    grid-template-columns: 34px auto minmax(0, 1fr) 36px;
+    grid-template-columns: 34px auto minmax(0, 1fr) 34px;
     gap: 8px;
     height: 58px;
     padding: 0 12px;
@@ -1308,7 +1322,7 @@ a { color: inherit; text-decoration: none; }
   }
 
   /* On small phones hide desktop cart — bottom nav has it */
-  .topbar-actions .icon-button:first-child { display: none; }
+  .cart-icon-button { display: none; }
 
   .listing-layout { gap: 14px; }
 
