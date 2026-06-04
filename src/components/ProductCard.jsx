@@ -1,12 +1,15 @@
 import React from "react";
-import { ShoppingCart, Star, Zap } from "lucide-react";
+import { Heart, ShoppingCart, Star, Zap } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+import { useWishlist } from "../context/WishlistContext.jsx";
 
 export default function ProductCard({ product }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
 
   function handleAddToCart(event) {
     event.preventDefault();
@@ -22,6 +25,12 @@ export default function ProductCard({ product }) {
     });
   }
 
+  function handleWishlist(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    wishlisted ? removeFromWishlist(product.id) : addToWishlist(product);
+  }
+
   return (
     <Link
       className="product-card"
@@ -30,6 +39,13 @@ export default function ProductCard({ product }) {
     >
       <div className="product-image-wrap">
         <img src={product.thumbnail} alt={product.title} loading="lazy" />
+        <button
+          className={`wish-btn${wishlisted ? " active" : ""}`}
+          onClick={handleWishlist}
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <Heart size={16} fill={wishlisted ? "currentColor" : "none"} />
+        </button>
       </div>
       <div className="product-info">
         {product.category && (

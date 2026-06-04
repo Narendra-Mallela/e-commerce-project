@@ -10,6 +10,7 @@ import {
   Truck,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useOrders } from "../context/OrdersContext.jsx";
 import { useProfile } from "../context/ProfileContext.jsx";
 
 function generateOrderId() {
@@ -20,6 +21,7 @@ export default function CheckoutPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, saveProfile } = useProfile();
+  const { addOrder } = useOrders();
 
   const items = location.state?.items ?? [];
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -65,6 +67,14 @@ export default function CheckoutPage() {
   function handlePlaceOrder(e) {
     e.preventDefault();
     if (saveAddress) saveProfile(delivery);
+    addOrder({
+      id: orderId,
+      date: new Date().toISOString(),
+      items,
+      total,
+      status: "Processing",
+      deliveryAddress: delivery,
+    });
     setStep("success");
   }
 

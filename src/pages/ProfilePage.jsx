@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   CheckCircle,
   Edit3,
+  Heart,
   LogOut,
   MapPin,
   Package,
@@ -9,22 +10,32 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { useOrders } from "../context/OrdersContext.jsx";
 import { useProfile } from "../context/ProfileContext.jsx";
+import { useWishlist } from "../context/WishlistContext.jsx";
 
 const TABS = ["Profile", "Orders", "Settings"];
 
 export default function ProfilePage() {
   const { profile, saveProfile, resetProfile } = useProfile();
-  const { items, totalPrice } = useCart();
+  const { items: cartItems } = useCart();
+  const { orders } = useOrders();
+  const { items: wishlistItems } = useWishlist();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [tab, setTab] = useState("Profile");
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState(profile);
 
-  const initials = profile.name
-    ? profile.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+  const displayName = user?.name || profile.name;
+  const displayEmail = user?.email || profile.email;
+
+  const initials = displayName
+    ? displayName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "?";
 
   function handleChange(e) {
@@ -45,14 +56,19 @@ export default function ProfilePage() {
     setSaved(false);
   }
 
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
+
   return (
     <div className="profile-page">
       {/* ── Header card ── */}
       <div className="profile-header-card">
         <div className="profile-avatar">{initials}</div>
         <div className="profile-header-info">
-          <h1>{profile.name || "Your Name"}</h1>
-          <p>{profile.email || "No email set"}</p>
+          <h1>{displayName || "Your Name"}</h1>
+          <p>{displayEmail || "No email set"}</p>
         </div>
         {!editing && (
           <button className="profile-edit-btn" onClick={handleEdit}>
@@ -66,18 +82,18 @@ export default function ProfilePage() {
       <div className="profile-stats">
         <div className="profile-stat">
           <ShoppingBag size={20} />
-          <span>{items.length}</span>
-          <p>Items in Cart</p>
+          <span>{cartItems.length}</span>
+          <p>In Cart</p>
         </div>
         <div className="profile-stat">
           <Package size={20} />
-          <span>0</span>
-          <p>Orders Placed</p>
+          <span>{orders.length}</span>
+          <p>Orders</p>
         </div>
-        <div className="profile-stat">
-          <MapPin size={20} />
-          <span>{profile.city || "—"}</span>
-          <p>City</p>
+        <div className="profile-stat profile-stat-link" onClick={() => navigate("/wishlist")}>
+          <Heart size={20} />
+          <span>{wishlistItems.length}</span>
+          <p>Wishlist</p>
         </div>
       </div>
 
@@ -145,8 +161,8 @@ export default function ProfilePage() {
             </form>
           ) : (
             <dl className="profile-details">
-              <ProfileDetail icon={<User size={16} />} label="Full Name" value={profile.name} />
-              <ProfileDetail label="Email" value={profile.email} />
+              <ProfileDetail icon={<User size={16} />} label="Full Name" value={displayName} />
+              <ProfileDetail label="Email" value={displayEmail} />
               <ProfileDetail icon={<Phone size={16} />} label="Phone" value={profile.phone} />
               <ProfileDetail icon={<MapPin size={16} />} label="Address" value={profile.address} />
               <ProfileDetail label="City" value={profile.city} />
@@ -159,32 +175,54 @@ export default function ProfilePage() {
       {/* ── Orders tab ── */}
       {tab === "Orders" && (
         <div className="profile-card">
-          {items.length === 0 ? (
+          {orders.length === 0 ? (
             <div className="profile-empty">
               <Package size={40} />
               <h2>No orders yet</h2>
-              <p>Items you add to cart will appear here.</p>
+              <p>Your completed purchases will appear here.</p>
               <Link to="/" className="profile-shop-btn">Start Shopping</Link>
             </div>
           ) : (
-            <div className="profile-orders">
-              <div className="profile-orders-header">
-                <span>Current Cart ({items.length} items)</span>
-                <strong>${totalPrice.toFixed(2)}</strong>
-              </div>
-              {items.map((item) => (
-                <Link
-                  to={`/product/${item.id}`}
-                  className="profile-order-item"
-                  key={item.id}
-                >
-                  <img src={item.thumbnail} alt={item.title} />
-                  <div className="profile-order-info">
-                    <h3>{item.title}</h3>
-                    <p>Qty: {item.quantity}</p>
+            <div className="orders-list">
+              {orders.map((order) => (
+                <div key={order.id} className="order-card">
+                  <div className="order-card-header">
+                    <div className="order-card-meta">
+                      <span className="order-id">Order #{order.id}</span>
+                      <span className="order-date">
+                        {new Date(order.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+                    <div className="order-card-right">
+                      <span className={`order-status order-status-${order.status.toLowerCase().replace(" ", "-")}`}>
+                        {order.status}
+                      </span>
+                      <strong className="order-total">${order.total.toFixed(2)}</strong>
+                    </div>
                   </div>
-                  <strong>${(item.price * item.quantity).toFixed(2)}</strong>
-                </Link>
+                  <div className="order-items-list">
+                    {order.items.map((item) => (
+                      <Link
+                        key={item.id}
+                        to={`/product/${item.id}`}
+                        className="order-item"
+                      >
+                        <img src={item.thumbnail} alt={item.title} />
+                        <div className="order-item-info">
+                          <span>{item.title}</span>
+                          <small>Qty: {item.quantity}</small>
+                        </div>
+                        <span className="order-item-price">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}
@@ -215,6 +253,18 @@ export default function ProfilePage() {
                 <span />
               </label>
             </div>
+            {user && (
+              <div className="profile-settings-item danger">
+                <div>
+                  <h3>Sign Out</h3>
+                  <p>Log out of your account</p>
+                </div>
+                <button className="profile-danger-btn" onClick={handleLogout}>
+                  <LogOut size={15} />
+                  Sign Out
+                </button>
+              </div>
+            )}
             <div className="profile-settings-item danger">
               <div>
                 <h3>Reset Profile</h3>

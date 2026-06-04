@@ -1,14 +1,17 @@
 import React from "react";
-import { Home, Search, ShoppingCart, UserCircle } from "lucide-react";
+import { Heart, Home, Search, ShoppingCart, UserCircle } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+import { useWishlist } from "../context/WishlistContext.jsx";
 
 export default function BottomNav({ onCartOpen, onSearchFocus }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { totalQuantity } = useCart();
+  const { items: wishlistItems } = useWishlist();
   const isHome = location.pathname === "/" && !location.search.includes("category");
   const isProfile = location.pathname === "/profile";
+  const isWishlist = location.pathname === "/wishlist";
 
   return (
     <nav className="bottom-nav" aria-label="Mobile navigation">
@@ -23,6 +26,19 @@ export default function BottomNav({ onCartOpen, onSearchFocus }) {
       <button className="bottom-nav-btn" onClick={onSearchFocus}>
         <Search size={22} />
         <span>Search</span>
+      </button>
+
+      <button
+        className={`bottom-nav-btn ${isWishlist ? "active" : ""}`}
+        onClick={() => navigate("/wishlist")}
+      >
+        <span className="bottom-nav-icon-wrap">
+          <Heart size={22} />
+          {wishlistItems.length > 0 && (
+            <span className="bottom-nav-badge">{wishlistItems.length}</span>
+          )}
+        </span>
+        <span>Wishlist</span>
       </button>
 
       <button className="bottom-nav-btn cart-nav-btn" onClick={onCartOpen}>

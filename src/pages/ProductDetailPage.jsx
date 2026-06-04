@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingCart, Star, Zap } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, ShoppingCart, Star, Zap } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import StatusMessage from "../components/StatusMessage.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { useWishlist } from "../context/WishlistContext.jsx";
 import { clearProduct, loadProductById } from "../store/productDetailSlice.js";
 
 export default function ProductDetailPage() {
@@ -12,8 +13,10 @@ export default function ProductDetailPage() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
 
   const { product, loading, error } = useSelector((state) => state.productDetail);
+  const wishlisted = product ? isWishlisted(product.id) : false;
 
   useEffect(() => {
     dispatch(loadProductById(id));
@@ -30,6 +33,10 @@ export default function ProductDetailPage() {
     navigate(`/product/${productId}${location.search}`, {
       state: { from: location.state?.from ?? `/${location.search}` },
     });
+  }
+
+  function handleWishlist() {
+    wishlisted ? removeFromWishlist(product.id) : addToWishlist(product);
   }
 
   if (loading) {
@@ -51,6 +58,14 @@ export default function ProductDetailPage() {
 
           <div className="detail-image-wrap">
             <img src={product.thumbnail} alt={product.title} />
+            <button
+              className={`detail-wish-btn${wishlisted ? " active" : ""}`}
+              onClick={handleWishlist}
+              aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart size={20} fill={wishlisted ? "currentColor" : "none"} />
+              {wishlisted ? "Wishlisted" : "Add to Wishlist"}
+            </button>
           </div>
 
           <nav className="detail-mini-pagination" aria-label="Product detail pagination">
