@@ -46,11 +46,13 @@ export default function ProductCard({ product }) {
         <div className="card-action-row">
           <button className="add-to-cart-btn" onClick={handleAddToCart} aria-label="Add to cart">
             <ShoppingCart size={14} />
-            Add to Cart
+            <span className="action-label-full">Add to Cart</span>
+            <span className="action-label-short">Cart</span>
           </button>
           <button className="buy-now-btn" onClick={handleBuyNow} aria-label="Buy now">
             <Zap size={14} />
-            Buy Now
+            <span className="action-label-full">Buy Now</span>
+            <span className="action-label-short">Buy</span>
           </button>
         </div>
       </div>

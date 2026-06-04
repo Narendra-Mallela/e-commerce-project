@@ -180,11 +180,17 @@ a { color: inherit; text-decoration: none; }
   background: #172334;
   color: #fff;
   box-shadow: 0 2px 10px rgb(15 23 42 / 15%);
+  scrollbar-width: none;
+}
+
+.home-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .home-nav button {
   flex: 0 0 auto;
   min-height: 30px;
+  padding: 0 10px;
   border: 0;
   background: transparent;
   color: #fff;
@@ -717,6 +723,8 @@ a { color: inherit; text-decoration: none; }
   padding: 4px 12px;
 }
 
+.action-label-short { display: none; }
+
 /* ── PAGINATION ────────────────────────────────── */
 .pagination {
   display: flex;
@@ -1209,39 +1217,190 @@ a { color: inherit; text-decoration: none; }
   .hero-products a { width: 108px; }
 
   .detail-layout {
-    padding: 18px;
-    gap: 18px;
+    min-height: 0;
+    padding: 16px;
+    gap: 16px;
+    border-radius: 14px;
   }
 
-  .detail-image-wrap { min-height: 240px; }
-  .detail-image-wrap img { max-height: 230px; }
+  .detail-media-column {
+    gap: 12px;
+  }
 
-  .detail-mini-pagination { justify-content: flex-start; }
-  .detail-mini-pagination .page-button { flex: 1 1 110px; }
+  .detail-image-wrap {
+    min-height: 220px;
+    padding: 8px 0;
+  }
+
+  .detail-image-wrap img {
+    max-width: min(82%, 250px);
+    max-height: 210px;
+  }
+
+  .detail-mini-pagination {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .detail-mini-pagination .page-button,
+  .detail-mini-pagination .page-number {
+    width: auto;
+    min-width: 0;
+  }
+
+  .detail-mini-pagination .page-button {
+    grid-column: span 2;
+    padding: 0 8px;
+  }
 
   .detail-content h1 { font-size: 1.35rem; }
 }
 
 @media (max-width: 520px) {
   .topbar {
-    grid-template-columns: 36px auto minmax(0, 1fr) 40px;
+    grid-template-columns: 34px auto minmax(0, 1fr) 36px;
+    gap: 8px;
+    height: 58px;
+    padding: 0 12px;
+  }
+
+  .icon-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .topbar-brand {
+    gap: 7px;
+    font-size: 1rem;
+  }
+
+  .topbar-brand-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .search-field {
+    height: 36px;
+    padding: 0 12px;
+  }
+
+  .search-field input {
+    font-size: 0.9rem;
+  }
+
+  .home-nav {
+    top: 58px;
+    min-height: 36px;
+    padding: 0 8px;
+    gap: 2px;
+  }
+
+  .home-nav button {
+    min-height: 32px;
+    padding: 0 9px;
+    font-size: 0.84rem;
+  }
+
+  .main-content {
+    width: min(100% - 18px, 1200px);
+    padding-top: 18px;
   }
 
   /* On small phones hide desktop cart — bottom nav has it */
   .topbar-actions .icon-button:first-child { display: none; }
 
-  .product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+  .listing-layout { gap: 14px; }
+
+  .listing-title {
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 14px;
   }
 
-  .product-image-wrap { height: 148px; }
+  .listing-title h1 {
+    font-size: 1.18rem;
+    line-height: 1.2;
+  }
 
-  .product-info { padding: 10px; gap: 7px; }
+  .listing-title-right {
+    gap: 7px;
+  }
 
-  .product-info h2 { font-size: 0.82rem; }
+  .listing-title p {
+    font-size: 0.74rem;
+    padding: 4px 8px;
+  }
 
-  .add-to-cart-btn { font-size: 0.76rem; padding: 7px 0; }
+  .mobile-filter-toggle {
+    height: 32px;
+    gap: 5px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .product-card {
+    border-radius: 10px;
+  }
+
+  .product-image-wrap {
+    height: 132px;
+    padding: 12px;
+  }
+
+  .product-image-wrap img {
+    max-height: 108px;
+  }
+
+  .product-info {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .product-info h2 {
+    min-height: 38px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .product-category-badge {
+    font-size: 0.64rem;
+    padding: 2px 7px;
+  }
+
+  .product-meta {
+    gap: 6px;
+  }
+
+  .product-meta strong {
+    font-size: 1rem;
+  }
+
+  .rating-pill {
+    gap: 3px;
+    padding: 3px 7px;
+    font-size: 0.72rem;
+  }
+
+  .card-action-row {
+    gap: 6px;
+  }
+
+  .add-to-cart-btn,
+  .buy-now-btn {
+    min-height: 36px;
+    padding: 7px 4px;
+    font-size: 0.76rem;
+    line-height: 1;
+  }
+
+  .action-label-full { display: none; }
+  .action-label-short { display: inline; }
 
   .pagination { justify-content: flex-start; }
 
@@ -1269,20 +1428,217 @@ a { color: inherit; text-decoration: none; }
   .home-card-product.featured { grid-template-columns: 1fr; }
 
   /* Detail page on small phone */
-  .detail-layout { padding: 14px; gap: 14px; }
+  .detail-page {
+    width: 100%;
+  }
 
-  .detail-content h1 { font-size: 1.2rem; }
+  .detail-layout {
+    padding: 12px;
+    gap: 12px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+  }
 
-  .detail-price-row strong { font-size: 1.2rem; }
+  .detail-media-column {
+    gap: 10px;
+  }
+
+  .back-button {
+    min-height: 32px;
+    padding: 0 11px;
+    font-size: 0.78rem;
+  }
+
+  .detail-image-wrap {
+    min-height: 178px;
+    padding: 0;
+  }
+
+  .detail-image-wrap img {
+    max-width: min(74%, 210px);
+    max-height: 168px;
+  }
+
+  .detail-mini-pagination {
+    grid-template-columns: 1.6fr repeat(5, minmax(30px, 1fr)) 1.4fr;
+    gap: 5px;
+  }
+
+  .detail-mini-pagination .page-button,
+  .detail-mini-pagination .page-number {
+    min-height: 32px;
+    border-radius: 7px;
+    font-size: 0.72rem;
+  }
+
+  .detail-mini-pagination .page-button {
+    grid-column: auto;
+    padding: 0 6px;
+  }
+
+  .detail-content {
+    padding-top: 4px;
+  }
+
+  .detail-content h1 {
+    margin-bottom: 8px;
+    font-size: 1.14rem;
+    line-height: 1.18;
+  }
+
+  .detail-price-row {
+    margin-bottom: 10px;
+  }
+
+  .detail-price-row strong { font-size: 1.18rem; }
+
+  .rating-pill.large {
+    padding: 4px 10px;
+    font-size: 0.82rem;
+  }
+
+  .detail-action-row {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .detail-cart-button,
+  .detail-buynow-button {
+    min-height: 42px;
+    font-size: 0.9rem;
+  }
+
+  .product-facts {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+  }
+
+  .product-facts div {
+    gap: 7px;
+  }
+
+  .product-facts dt,
+  .product-facts dd {
+    font-size: 0.78rem;
+  }
+
+  .detail-section {
+    margin-top: 16px;
+  }
+
+  .detail-section h2 {
+    margin-bottom: 8px;
+    font-size: 0.98rem;
+  }
+
+  .detail-section p {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .reviews-list {
+    gap: 12px;
+  }
+
+  .review-item div {
+    gap: 8px;
+  }
+
+  .review-item strong {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 380px) {
   .topbar {
-    grid-template-columns: 32px auto minmax(0, 1fr) 34px;
+    grid-template-columns: 32px auto minmax(0, 1fr) 32px;
+    gap: 6px;
+    padding: 0 8px;
+  }
+
+  .topbar-brand { font-size: 0.95rem; }
+
+  .search-field {
     padding: 0 10px;
   }
 
-  .main-content { width: min(100% - 14px, 1200px); }
+  .search-field input {
+    font-size: 0.84rem;
+  }
+
+  .listing-title {
+    flex-wrap: wrap;
+  }
+
+  .listing-title-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .main-content { width: min(100% - 16px, 1200px); }
+
+  .product-grid {
+    gap: 10px;
+  }
+
+  .product-image-wrap {
+    height: 118px;
+  }
+
+  .product-image-wrap img {
+    max-height: 96px;
+  }
+
+  .product-info {
+    padding: 9px;
+  }
+
+  .add-to-cart-btn,
+  .buy-now-btn {
+    min-height: 34px;
+    font-size: 0.72rem;
+  }
+
+  .detail-layout {
+    padding: 10px;
+  }
+
+  .detail-image-wrap {
+    min-height: 156px;
+  }
+
+  .detail-image-wrap img {
+    max-width: min(70%, 188px);
+    max-height: 150px;
+  }
+
+  .detail-mini-pagination {
+    grid-template-columns: 1.35fr repeat(5, minmax(28px, 1fr)) 1.1fr;
+  }
+
+  .detail-mini-pagination .page-button,
+  .detail-mini-pagination .page-number {
+    min-height: 30px;
+    font-size: 0.68rem;
+  }
+
+  .detail-mini-pagination .page-button {
+    padding: 0 4px;
+  }
+
+  .detail-mini-pagination .page-button svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .detail-content h1 {
+    font-size: 1.08rem;
+  }
+
+  .detail-cart-button,
+  .detail-buynow-button {
+    min-height: 40px;
+  }
 }
 
 .drawer-backdrop {
